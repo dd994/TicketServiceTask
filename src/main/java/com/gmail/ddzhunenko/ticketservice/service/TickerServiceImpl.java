@@ -4,7 +4,12 @@ import com.gmail.ddzhunenko.ticketservice.model.Order;
 import com.gmail.ddzhunenko.ticketservice.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class TickerServiceImpl implements TicketService {
@@ -32,8 +37,8 @@ public class TickerServiceImpl implements TicketService {
                 try {
                     String result = StatusGenerator();
                     ticketRepository.setPaymentStatus(currentTransactionId, result);
-                    while (result.equals("Processed")){
-                        Thread.sleep(10000);
+                    while (result.equals("Processed")) {
+                        Thread.sleep(60000);
                         result = StatusGenerator();
                         ticketRepository.setPaymentStatus(currentTransactionId, result);
                     }
@@ -51,7 +56,16 @@ public class TickerServiceImpl implements TicketService {
 
     @Override
     public String orderStatusCheck(Long currentTransactionId) {
-        return null;
+        return ticketRepository.getByTransactionID(currentTransactionId).getPaymentStatus();
+    }
+
+    @Override
+    public List<Order> getClientOrdersFromNow(int clientID) {
+        return ticketRepository.getClientsByClientID(clientID)
+                .stream()
+                .filter(order -> order.getRouteDate().isAfter(LocalDateTime.now()))
+                .sorted(Comparator.comparing(Order::getRouteDate))
+                .collect(Collectors.toList());
     }
 
     private String StatusGenerator() {

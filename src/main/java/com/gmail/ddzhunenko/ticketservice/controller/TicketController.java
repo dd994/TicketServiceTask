@@ -7,14 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("order")
+@RequestMapping("tickets")
 public class TicketController {
 
     private final TickerServiceImpl tickerService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/new-order")
     public ResponseEntity<Order> saveOrder(@RequestBody Order order){
         tickerService.receiveOrder(order);
@@ -26,6 +27,11 @@ public class TicketController {
     @PostMapping("/payment")
     public void paymentProcessing(){
         tickerService.paymentProcess();
+    }
+
+    @GetMapping("/get-orders/{id}")
+    public List<Order> getClientOrders (@PathVariable("id") int clientID){
+        return tickerService.getClientOrdersFromNow(clientID);
     }
 
 
