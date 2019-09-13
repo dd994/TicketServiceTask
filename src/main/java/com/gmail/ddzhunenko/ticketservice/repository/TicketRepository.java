@@ -1,0 +1,25 @@
+package com.gmail.ddzhunenko.ticketservice.repository;
+
+import com.gmail.ddzhunenko.ticketservice.model.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+public interface TicketRepository extends JpaRepository<Order, Long>{
+
+    List<Order> getByTransactionID(Long transactionId);
+
+    @Query(value = "update  TICKET_ORDERS t set t.PAYMENT_STATUS = :status where t.TRANSACTION_ID = :transactionId", nativeQuery = true)
+    @Modifying
+    @Transactional
+    void setPaymentStatus(@Param("transactionId")Long transactionId, @Param("status") String status);
+
+
+//    @Query("UPDATE Author SET firstName = :prefix || firstName")
+//    @Modifyin
+//    void addPrefixToFirstName(@Param("prefix") String prefix);
+}
