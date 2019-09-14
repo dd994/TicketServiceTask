@@ -1,20 +1,22 @@
 package com.gmail.ddzhunenko.ticketservice.controller;
 
 import com.gmail.ddzhunenko.ticketservice.model.Order;
-import com.gmail.ddzhunenko.ticketservice.service.TickerServiceImpl;
+import com.gmail.ddzhunenko.ticketservice.service.TickerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("tickets")
 public class TicketController {
 
-    private final TickerServiceImpl tickerService;
+    private final TickerService tickerService;
 
     @PostMapping("/new-order")
     public ResponseEntity<Order> saveOrder(@RequestBody Order order){
