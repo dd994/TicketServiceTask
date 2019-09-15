@@ -44,7 +44,6 @@ public class TickerService {
         }).start();
     }
 
-
     public List<Order> getClientOrdersFromNow(int clientID) {
         return ticketRepository.getClientsByClientID(clientID)
                 .stream()
@@ -52,7 +51,6 @@ public class TickerService {
                 .sorted(Comparator.comparing(Order::getRouteDate))
                 .collect(Collectors.toList());
     }
-
 
     private void removeCrashedOrders() {
         new Thread(() -> {

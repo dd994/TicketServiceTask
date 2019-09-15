@@ -18,6 +18,7 @@ public class TicketController {
 
     private final TickerService tickerService;
 
+
     @PostMapping("/new-order")
     public ResponseEntity<Order> saveOrder(@RequestBody Order order){
         tickerService.receiveOrder(order);

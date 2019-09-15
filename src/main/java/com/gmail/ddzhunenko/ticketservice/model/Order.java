@@ -2,16 +2,19 @@ package com.gmail.ddzhunenko.ticketservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Timer;
 
 @Entity
 @Table(name = "TICKET_ORDERS")
 @Data
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
 
     @Id
@@ -40,6 +43,5 @@ public class Order {
 
     @Column(name = "client_id")
     private int clientID;
-
 
 }
