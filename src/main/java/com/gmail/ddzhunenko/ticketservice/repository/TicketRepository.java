@@ -8,20 +8,16 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface TicketRepository extends JpaRepository<Order, Long>{
+public interface TicketRepository extends JpaRepository<Order, Long> {
 
-    Order getByTransactionID(Long transactionId);
+    List<Order> getClientsByClientID(int clientID);
 
     List<Order> getAllByTransactionIDNotNull();
-
-    void deleteByClientID(int clientID);
 
     @Modifying
     @Transactional
     @Query(value = "update  TICKET_ORDERS t set t.PAYMENT_STATUS = :status where t.TRANSACTION_ID = :transactionId", nativeQuery = true)
-    void setPaymentStatus(@Param("transactionId")Long transactionId, @Param("status") String status);
-
-    List<Order> getClientsByClientID(int clientID);
+    void setPaymentStatus(@Param("transactionId") Long transactionId, @Param("status") String status);
 
 
 }

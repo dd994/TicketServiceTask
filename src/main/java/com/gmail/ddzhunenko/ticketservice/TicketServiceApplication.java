@@ -10,7 +10,7 @@ public class TicketServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TicketServiceApplication.class, args);
-        log.info("test");
+        log.info("Starting run the Ticket Service application");
     }
 
 }

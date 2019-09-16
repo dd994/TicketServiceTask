@@ -2,16 +2,18 @@ package com.gmail.ddzhunenko.ticketservice.service;
 
 import com.gmail.ddzhunenko.ticketservice.model.Order;
 import com.gmail.ddzhunenko.ticketservice.repository.TicketRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
+
 @Service
 public class TickerService {
 
+    private static Logger log = LoggerFactory.getLogger(TickerService.class);
     private final TicketRepository ticketRepository;
     private Long currentTransactionId;
     private Random random = new Random();
@@ -26,6 +28,7 @@ public class TickerService {
         currentTransactionId = order.getTransactionID();
         ticketRepository.save(order);
         removeCrashedOrders();
+        log.info("Added a new order record to the database");
     }
 
     public void paymentProcess() {
@@ -39,17 +42,23 @@ public class TickerService {
                     ticketRepository.setPaymentStatus(currentTransactionId, result);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("Error on the thread off paymentProcess method",e);
             }
         }).start();
     }
 
     public List<Order> getClientOrdersFromNow(int clientID) {
-        return ticketRepository.getClientsByClientID(clientID)
-                .stream()
-                .filter(order -> order.getRouteDate().isAfter(LocalDateTime.now()))
-                .sorted(Comparator.comparing(Order::getRouteDate))
-                .collect(Collectors.toList());
+        List<Order> orderList = null;
+        try {
+            orderList = ticketRepository.getClientsByClientID(clientID)
+                    .stream()
+                    .filter(order -> order.getRouteDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.comparing(Order::getRouteDate))
+                    .collect(Collectors.toList());
+        } catch (ClassCastException e) {
+            log.error("Wrong data type came");
+        }
+        return orderList;
     }
 
     private void removeCrashedOrders() {
@@ -65,7 +74,9 @@ public class TickerService {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
+                log.error("No value found in database, method - removeCrashedOrders()",e);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
